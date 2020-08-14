@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Board from "./Board";
 import {v4 as uuidv4} from 'uuid';
 import {DragDropContext} from "react-beautiful-dnd";
+import ModalWindow from "./ModalWindow";
 
 const initialTasks = [
     {
@@ -11,13 +12,13 @@ const initialTasks = [
             priority: 1,
             status: 'review',
             time: new Date()
-        },{
+        }, {
             id: uuidv4(),
             title: "b",
             priority: 2,
             status: 'review',
             time: new Date()
-        },{
+        }, {
             id: uuidv4(),
             title: "c",
             priority: 3,
@@ -150,33 +151,41 @@ function App() {
 
     }
     return (
-        <div style={{display: 'flex', justifyContent: 'center', height: '100%'}}>
-            <DragDropContext onDragEnd={onDragEnd}>
-                <div
-                    style={{
-                        display: 'flex', flexDirection: "row", alignItems: "top"
-                    }}
+        <div>
+            <div style={{display: 'flex', justifyContent: 'center', height: '100%'}}>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <div
+                        style={{
+                            display: 'flex', flexDirection: "row", alignItems: "top"
+                        }}
 
-                >
-                    {
-                        tasks.map((el, index) => <Board
-                            indexStatus={index}
-                            key={index}
-                            status={statuses[index]}
-                            tasks={el[String(index)]}
-                            deleteTask={deleteTask}
-                            editTask={editTask}
-                            addTask={addTask}
-                            sortDataAlphabetically={sortDataAlphabetically}
-                        />)
-                    }
-                </div>
+                    >
+                        {
+                            tasks.map((el, index) => <Board
+                                indexStatus={index}
+                                key={index}
+
+                                status={statuses[index]}
+                                tasks={el[String(index)]}
+                                deleteTask={deleteTask}
+                                editTask={editTask}
+                                addTask={addTask}
+                                sortDataAlphabetically={sortDataAlphabetically}
+                            />)
+                        }
+                    </div>
 
 
-            </DragDropContext>
+                </DragDropContext>
+
+            </div>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <ModalWindow statuses={statuses}/>
+            </div>
         </div>
 
-    );
+    )
+        ;
 }
 
 export default App;

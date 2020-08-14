@@ -132,7 +132,7 @@ function Board(props) {
                                   onClick={sortAlphabet}>Alphabet</button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={sortDataTimeNew}>first new</button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={sortDataTimeOld}>first old</button></div>:''}
-                    <ModalWindow/>
+
 
 
 
