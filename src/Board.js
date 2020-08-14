@@ -4,6 +4,7 @@ import {Droppable} from "react-beautiful-dnd";
 import {v4 as uuidv4} from 'uuid';
 import './App.css';
 import './AddCard.css'
+import {Modal, ModalHeader, ModalBody,ModalFooter,Button} from "reactstrap"
 
 const addIcon = (<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-plus-square" fill="currentColor"
                       xmlns="http://www.w3.org/2000/svg">
@@ -19,6 +20,8 @@ const saveBut = (<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi
     <path fillRule="evenodd"
           d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/>
 </svg>)
+
+
 
 function Board(props) {
     const [addCardBut, setBut] = useState(false)
@@ -128,9 +131,21 @@ function Board(props) {
                                   onClick={sortAlphabet}>Alphabet</button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={sortDataTimeNew}>first new</button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={sortDataTimeOld}>first old</button></div>:''}
+                <Modal isOpen={true} >
+                    <ModalHeader >Add New Task</ModalHeader>
+                    <ModalBody>
+
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button >Do Something</Button>
+                        {' '}
+                        <Button >Cancel</Button>
+                    </ModalFooter>
+                </Modal>
 
 
             </div>
+
         </div>
 
     );
