@@ -7,25 +7,7 @@ import axios from "axios"
 
 const initialTasks = [
     {
-        0: [{
-            id: uuidv4(),
-            title: "a",
-            priority: 1,
-            status: 'review',
-            time: new Date()
-        }, {
-            id: uuidv4(),
-            title: "b",
-            priority: 2,
-            status: 'review',
-            time: new Date()
-        }, {
-            id: uuidv4(),
-            title: "c",
-            priority: 3,
-            status: 'review',
-            time: new Date()
-        },]
+        0: []
     },
     {
         1: []
@@ -34,15 +16,7 @@ const initialTasks = [
         2: []
     },
     {
-        3: [
-            {
-                id: uuidv4(),
-                title: "d",
-                priority: 3,
-                status: 'review',
-                time: new Date()
-            },
-        ]
+        3: []
     }
 
 ]
@@ -50,31 +24,77 @@ const initialTasks = [
 const statuses = ['todo', 'progress', 'review', 'done']
 
 function App() {
-
-
-
-
     const [tasks, setTasks] = useState(initialTasks)
     const deleteTask = (column, ID) => {
         const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
-        const indexToDelete = arrColumnTasks.findIndex(el => el.id === ID)
+        const indexToDelete = arrColumnTasks.findIndex(el => el._id === ID)
         arrColumnTasks.splice(indexToDelete, 1)
         setTasks(copiedTasks)
     }
     const editTask = (column, ID, title) => {
         const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
-        const indexToEdit = arrColumnTasks.findIndex(el => el.id === ID)
+        const indexToEdit = arrColumnTasks.findIndex(el => el._id === ID)
         arrColumnTasks[indexToEdit].title = title
         setTasks(copiedTasks)
     }
-    const addTask = (column, title) => {
-        const copiedTasks = tasks.slice()
+    const addTask = async (column, title) => {
+        /*const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
-        arrColumnTasks.push({id: uuidv4(), title: title, priority: arrColumnTasks.length + 1, time: new Date()})
+        arrColumnTasks.push({_id: uuidv4(), title: title, priority: arrColumnTasks.length + 1, time: new Date()})
         setTasks(copiedTasks)
-        console.log(copiedTasks)
+        console.log(copiedTasks)*/
+        await axios.post('http://localhost:5000/todo', {name: title, description: column, time: new Date()})
+            .then((result) => {
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+
+        await axios.get('http://localhost:5000/todo')
+            .then((result) => {
+                const listDataFromServer = result.data
+                const startTasks = [
+                    {
+                        0: []
+                    },
+                    {
+                        1: []
+                    },
+                    {
+                        2: []
+                    },
+                    {
+                        3: []
+                    }
+                ]
+                console.log("StartEmpty", startTasks)
+                // eslint-disable-next-line array-callback-return
+                listDataFromServer.map((el) => {
+                    let newArr = startTasks[el.description][el.description]
+                    newArr.push(
+                        {
+                            _id: el._id,
+                            title: el.name,
+                            status: statuses[el.description],
+                            time: el.createdAt,
+                        }
+                    )
+
+                })
+                console.log("StartFull", startTasks)
+                setTasks(startTasks)
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
     }
     const sortDataAlphabetically = (column, typeSort) => {
         const copiedTasks = tasks.slice()
@@ -156,11 +176,40 @@ function App() {
 
 
     }
-    useEffect(()=>{
+    useEffect(() => {
         axios.get('http://localhost:5000/todo')
-            .then((result)=>{
-                const listDataFromServer= result.data
-                console.log(listDataFromServer)
+            .then((result) => {
+                const listDataFromServer = result.data
+                const startTasks = [
+                    {
+                        0: []
+                    },
+                    {
+                        1: []
+                    },
+                    {
+                        2: []
+                    },
+                    {
+                        3: []
+                    }
+                ]
+                console.log("StartEmpty", startTasks)
+                // eslint-disable-next-line array-callback-return
+                listDataFromServer.map((el) => {
+                    let newArr = startTasks[el.description][el.description]
+                    newArr.push(
+                        {
+                            _id: el._id,
+                            title: el.name,
+                            status: statuses[el.description],
+                            time: el.createdAt,
+                        }
+                    )
+
+                })
+                console.log("StartFull", startTasks)
+                setTasks(startTasks)
 
 
             })
@@ -169,7 +218,7 @@ function App() {
                 console.log(error);
             })
 
-    },[])
+    }, [])
     return (
         <div>
             <div style={{display: 'flex', justifyContent: 'center', height: '100%'}}>
