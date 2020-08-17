@@ -262,10 +262,10 @@ function App() {
             console.log(arrColumnTasks)
             // eslint-disable-next-line array-callback-return
             arrColumnTasks.sort(function (a, b) {
-                if (a.time > b.time) {
+                if (a.createdAt > b.createdAt) {
                     return -1
                 }
-                if (a.time < b.time) {
+                if (a.createdAt < b.createdAt) {
                     return 1
                 }
 
@@ -276,10 +276,10 @@ function App() {
             console.log(arrColumnTasks)
             // eslint-disable-next-line array-callback-return
             arrColumnTasks.sort(function (a, b) {
-                if (a.time > b.time) {
+                if (a.createdAt > b.createdAt) {
                     return 1
                 }
-                if (a.time < b.time) {
+                if (a.createdAt < b.createdAt) {
                     return -1
                 }
 
@@ -292,26 +292,22 @@ function App() {
             el.description = Number(column)
         })
         // eslint-disable-next-line array-callback-return
-        copiedTasks.map((el, column) => {
-            // eslint-disable-next-line array-callback-return
-            el[column].map((element, index) => {
-                axios.patch(`http://localhost:5000/todo/${element._id}`, {
-                    name: element.title,
-                    description: Number(column),
-                    index: index,
-                    time: element.time
-                })
-                    .then((result) => {
-
-
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-
-
+        arrColumnTasks.map((el,index)=>{
+            el.index=index
+            axios.patch(`http://localhost:5000/todo/${el._id}`, {
+                name: el.title,
+                description: Number(column),
+                index: index,
+                time: el.time
             })
+                .then((result) => {
+
+
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
         })
 
         await axios.get('http://localhost:5000/todo')
