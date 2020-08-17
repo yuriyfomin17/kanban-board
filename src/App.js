@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Board from "./Board";
 import {v4 as uuidv4} from 'uuid';
 import {DragDropContext} from "react-beautiful-dnd";
 import ModalWindow from "./ModalWindow";
+import axios from "axios"
 
 const initialTasks = [
     {
@@ -49,6 +50,10 @@ const initialTasks = [
 const statuses = ['todo', 'progress', 'review', 'done']
 
 function App() {
+
+
+
+
     const [tasks, setTasks] = useState(initialTasks)
     const deleteTask = (column, ID) => {
         const copiedTasks = tasks.slice()
@@ -68,6 +73,7 @@ function App() {
         const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
         arrColumnTasks.push({id: uuidv4(), title: title, priority: arrColumnTasks.length + 1, time: new Date()})
+        setTasks(copiedTasks)
         console.log(copiedTasks)
     }
     const sortDataAlphabetically = (column, typeSort) => {
@@ -150,6 +156,20 @@ function App() {
 
 
     }
+    useEffect(()=>{
+        axios.get('http://localhost:5000/todo')
+            .then((result)=>{
+                const listDataFromServer= result.data
+                console.log(listDataFromServer)
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+
+    },[])
     return (
         <div>
             <div style={{display: 'flex', justifyContent: 'center', height: '100%'}}>
@@ -180,7 +200,7 @@ function App() {
 
             </div>
             <div style={{display: 'flex', justifyContent: 'center'}}>
-                <ModalWindow statuses={statuses}/>
+                <ModalWindow statuses={statuses} addTask={addTask}/>
             </div>
         </div>
 
