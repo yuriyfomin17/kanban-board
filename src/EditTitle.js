@@ -17,7 +17,7 @@ function EditTitle(props) {
         setEditBut(!editBut)
     }
     const changeSave = () => {
-        props.editTask(props.indexStatus, props.el.id, inputValue)
+        props.editTask(props.indexStatus, props.el._id, inputValue)
         setEditBut(!editBut)
     }
 

@@ -25,19 +25,119 @@ const statuses = ['todo', 'progress', 'review', 'done']
 
 function App() {
     const [tasks, setTasks] = useState(initialTasks)
-    const deleteTask = (column, ID) => {
-        const copiedTasks = tasks.slice()
+    const deleteTask = async (column, ID) => {
+        /*const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
         const indexToDelete = arrColumnTasks.findIndex(el => el._id === ID)
         arrColumnTasks.splice(indexToDelete, 1)
-        setTasks(copiedTasks)
+        setTasks(copiedTasks)*/
+        await axios.delete(`http://localhost:5000/todo/${ID}`)
+            .then((result) => {
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+        await axios.get('http://localhost:5000/todo')
+            .then((result) => {
+                const listDataFromServer = result.data
+                const startTasks = [
+                    {
+                        0: []
+                    },
+                    {
+                        1: []
+                    },
+                    {
+                        2: []
+                    },
+                    {
+                        3: []
+                    }
+                ]
+                console.log("StartEmpty", startTasks)
+                // eslint-disable-next-line array-callback-return
+                listDataFromServer.map((el) => {
+                    let newArr = startTasks[el.description][el.description]
+                    newArr.push(
+                        {
+                            _id: el._id,
+                            title: el.name,
+                            status: statuses[el.description],
+                            time: el.createdAt,
+                        }
+                    )
+
+                })
+                console.log("StartFull", startTasks)
+                setTasks(startTasks)
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+
     }
-    const editTask = (column, ID, title) => {
-        const copiedTasks = tasks.slice()
+    const editTask = async (column, ID, title) => {
+        /*const copiedTasks = tasks.slice()
         const arrColumnTasks = copiedTasks[column][column]
         const indexToEdit = arrColumnTasks.findIndex(el => el._id === ID)
         arrColumnTasks[indexToEdit].title = title
-        setTasks(copiedTasks)
+        setTasks(copiedTasks)*/
+        await axios.patch(`http://localhost:5000/todo/${ID}`, {name: title, description: column, time: new Date()})
+            .then((result) => {
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+        await axios.get('http://localhost:5000/todo')
+            .then((result) => {
+                const listDataFromServer = result.data
+                const startTasks = [
+                    {
+                        0: []
+                    },
+                    {
+                        1: []
+                    },
+                    {
+                        2: []
+                    },
+                    {
+                        3: []
+                    }
+                ]
+                console.log("StartEmpty", startTasks)
+                // eslint-disable-next-line array-callback-return
+                listDataFromServer.map((el) => {
+                    let newArr = startTasks[el.description][el.description]
+                    newArr.push(
+                        {
+                            _id: el._id,
+                            title: el.name,
+                            status: statuses[el.description],
+                            time: el.createdAt,
+                        }
+                    )
+
+                })
+                console.log("StartFull", startTasks)
+                setTasks(startTasks)
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+
     }
     const addTask = async (column, title) => {
         /*const copiedTasks = tasks.slice()
