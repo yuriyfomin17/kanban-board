@@ -4,6 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 import {DragDropContext} from "react-beautiful-dnd";
 import ModalWindow from "./ModalWindow";
 import axios from "axios"
+import index from "styled-components/dist/styled-components-macro.esm";
 
 const initialTasks = [
     {
@@ -145,7 +146,14 @@ function App() {
         arrColumnTasks.push({_id: uuidv4(), title: title, priority: arrColumnTasks.length + 1, time: new Date()})
         setTasks(copiedTasks)
         console.log(copiedTasks)*/
-        await axios.post('http://localhost:5000/todo', {name: title, description: column, time: new Date()})
+        const copiedTasks = tasks.slice()
+        const arrColumnTasks = copiedTasks[column][column]
+        await axios.post('http://localhost:5000/todo', {
+            name: title,
+            description:  column ,
+            index:arrColumnTasks.length,
+            time: new Date()
+        })
             .then((result) => {
 
 
@@ -155,8 +163,9 @@ function App() {
                 console.log(error);
             })
 
-        await axios.get('http://localhost:5000/todo')
+        axios.get('http://localhost:5000/todo')
             .then((result) => {
+
                 const listDataFromServer = result.data
                 const startTasks = [
                     {
@@ -172,21 +181,26 @@ function App() {
                         3: []
                     }
                 ]
-                console.log("StartEmpty", startTasks)
+
                 // eslint-disable-next-line array-callback-return
-                listDataFromServer.map((el) => {
-                    let newArr = startTasks[el.description][el.description]
-                    newArr.push(
-                        {
-                            _id: el._id,
-                            title: el.name,
-                            status: statuses[el.description],
-                            time: el.createdAt,
+                startTasks.map(function (el,index) {
+                    let arrColumn = listDataFromServer.filter(el=>Number(el.description)===index)
+                    arrColumn.sort(function (a,b) {
+                        if(a.index>b.index){
+                            return 1
+                        }else{
+                            return  -1
                         }
-                    )
+
+                    })
+
+                    startTasks[index][index] = arrColumn
+                    console.log(startTasks)
+
 
                 })
-                console.log("StartFull", startTasks)
+
+
                 setTasks(startTasks)
 
 
@@ -266,7 +280,12 @@ function App() {
             const tasksArr = copiedTasks[source.droppableId][source.droppableId]
             const [removed] = tasksArr.splice(result.source.index, 1)
             console.log(removed)
-            await axios.patch(`http://localhost:5000/todo/${removed._id}`, {name: removed.title, description: destination.droppableId, time: removed.time})
+            await axios.patch(`http://localhost:5000/todo/${removed._id}`, {
+                name: removed.title,
+                description: Number(destination.droppableId),
+                index:copiedTasks[destination.droppableId][destination.droppableId].length,
+                time: removed.time
+            })
                 .then((result) => {
 
 
@@ -275,8 +294,9 @@ function App() {
                     // handle error
                     console.log(error);
                 })
-            await axios.get('http://localhost:5000/todo')
+            axios.get('http://localhost:5000/todo')
                 .then((result) => {
+
                     const listDataFromServer = result.data
                     const startTasks = [
                         {
@@ -292,21 +312,26 @@ function App() {
                             3: []
                         }
                     ]
-                    console.log("StartEmpty", startTasks)
+
                     // eslint-disable-next-line array-callback-return
-                    listDataFromServer.map((el) => {
-                        let newArr = startTasks[el.description][el.description]
-                        newArr.push(
-                            {
-                                _id: el._id,
-                                title: el.name,
-                                status: statuses[el.description],
-                                time: el.createdAt,
+                    startTasks.map(function (el,index) {
+                        let arrColumn = listDataFromServer.filter(el=>Number(el.description)===index)
+                        arrColumn.sort(function (a,b) {
+                            if(a.index>b.index){
+                                return 1
+                            }else{
+                                return  -1
                             }
-                        )
+
+                        })
+
+                        startTasks[index][index] = arrColumn
+                        console.log(startTasks)
+
 
                     })
-                    console.log("StartFull", startTasks)
+
+
                     setTasks(startTasks)
 
 
@@ -324,6 +349,7 @@ function App() {
     useEffect(() => {
         axios.get('http://localhost:5000/todo')
             .then((result) => {
+
                 const listDataFromServer = result.data
                 const startTasks = [
                     {
@@ -339,21 +365,26 @@ function App() {
                         3: []
                     }
                 ]
-                console.log("StartEmpty", startTasks)
+
                 // eslint-disable-next-line array-callback-return
-                listDataFromServer.map((el) => {
-                    let newArr = startTasks[el.description][el.description]
-                    newArr.push(
-                        {
-                            _id: el._id,
-                            title: el.name,
-                            status: statuses[el.description],
-                            time: el.createdAt,
+                startTasks.map(function (el,index) {
+                    let arrColumn = listDataFromServer.filter(el=>Number(el.description)===index)
+                    arrColumn.sort(function (a,b) {
+                        if(a.index>b.index){
+                            return 1
+                        }else{
+                            return  -1
                         }
-                    )
+
+                    })
+
+                    startTasks[index][index] = arrColumn
+                    console.log(startTasks)
+
 
                 })
-                console.log("StartFull", startTasks)
+
+
                 setTasks(startTasks)
 
 
