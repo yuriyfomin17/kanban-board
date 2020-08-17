@@ -117,13 +117,7 @@ function Board(props) {
                 {addCardBut ? <input type="text" className="form-control" aria-label="Small"
                                      aria-describedby="inputGroup-sizing-sm" value={inputValue}
                                      onChange={setInput}/> : ''}
-                {addCardBut ? <button type="button" className="btn btn-outline-primary btn-sm "
-                                      onClick={changeAddCard}>{saveBut}</button> :
-                    <span className="dropdown">
-                        <button type="button" className="btn btn-outline-primary btn-sm "
-                                onClick={changeAddCard}>{addIcon}</button>
-                    </span>
-                }
+
 
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={toggleMenu}>Sort
                         by..</button>
