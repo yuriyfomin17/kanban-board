@@ -241,7 +241,7 @@ function App() {
 
 
     }
-    const onDragEnd = (result) => {
+    const onDragEnd = async (result) => {
         const {source, destination} = result;
         // dropped outside the list
         if (!destination) {
@@ -266,11 +266,56 @@ function App() {
             const tasksArr = copiedTasks[source.droppableId][source.droppableId]
             const [removed] = tasksArr.splice(result.source.index, 1)
             console.log(removed)
-            console.log(copiedTasks)
-            console.log(copiedTasks[destination.droppableId][destination.droppableId])
-            copiedTasks[destination.droppableId][destination.droppableId].splice(result.destination.index, 0, removed)
-            console.log(copiedTasks)
-            setTasks(copiedTasks)
+            await axios.patch(`http://localhost:5000/todo/${removed._id}`, {name: removed.title, description: destination.droppableId, time: removed.time})
+                .then((result) => {
+
+
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+            await axios.get('http://localhost:5000/todo')
+                .then((result) => {
+                    const listDataFromServer = result.data
+                    const startTasks = [
+                        {
+                            0: []
+                        },
+                        {
+                            1: []
+                        },
+                        {
+                            2: []
+                        },
+                        {
+                            3: []
+                        }
+                    ]
+                    console.log("StartEmpty", startTasks)
+                    // eslint-disable-next-line array-callback-return
+                    listDataFromServer.map((el) => {
+                        let newArr = startTasks[el.description][el.description]
+                        newArr.push(
+                            {
+                                _id: el._id,
+                                title: el.name,
+                                status: statuses[el.description],
+                                time: el.createdAt,
+                            }
+                        )
+
+                    })
+                    console.log("StartFull", startTasks)
+                    setTasks(startTasks)
+
+
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+
 
         }
 
