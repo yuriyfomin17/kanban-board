@@ -42,8 +42,8 @@ function App() {
                 console.log(error);
             })
         // eslint-disable-next-line array-callback-return
-        arrColumnTasks.map((el,index)=>{
-            el.index=index
+        arrColumnTasks.map((el, index) => {
+            el.index = index
             axios.patch(`http://localhost:5000/todo/${el._id}`, {
                 name: el.title,
                 description: Number(column),
@@ -292,8 +292,8 @@ function App() {
             el.description = Number(column)
         })
         // eslint-disable-next-line array-callback-return
-        arrColumnTasks.map((el,index)=>{
-            el.index=index
+        arrColumnTasks.map((el, index) => {
+            el.index = index
             axios.patch(`http://localhost:5000/todo/${el._id}`, {
                 name: el.title,
                 description: Number(column),
@@ -358,7 +358,6 @@ function App() {
         setTasks(copiedTasks)
 
 
-
     }
     const onDragEnd = async (result) => {
         const {source, destination} = result;
@@ -377,31 +376,30 @@ function App() {
             const [removed] = tasksArr.splice(result.source.index, 1)
             tasksArr.splice(result.destination.index, 0, removed)
             console.log(copiedTasks)
+            // eslint-disable-next-line array-callback-return
             copiedTasks[destination.droppableId][destination.droppableId].map((el, index) => {
                 el.index = index
-                el.description = Number(destination.droppableId)
             })
+
+            console.log("copiedTasks", copiedTasks[destination.droppableId][destination.droppableId])
             // eslint-disable-next-line array-callback-return
-            copiedTasks.map((el, column) => {
-                // eslint-disable-next-line array-callback-return
-                el[column].map((element, index) => {
-                    axios.patch(`http://localhost:5000/todo/${element._id}`, {
-                        name: element.title,
-                        description: Number(column),
-                        index: index,
-                        time: element.time
-                    })
-                        .then((result) => {
-
-
-                        })
-                        .catch(function (error) {
-                            // handle error
-                            console.log(error);
-                        })
-
-
+            copiedTasks[destination.droppableId][destination.droppableId].map((el, index) => {
+                axios.patch(`http://localhost:5000/todo/${el._id}`, {
+                    name: el.title,
+                    description: el.description,
+                    index: index,
+                    time: el.time
                 })
+                    .then((result) => {
+
+
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+
+
             })
 
             await axios.get('http://localhost:5000/todo')
@@ -424,8 +422,8 @@ function App() {
                     ]
 
                     // eslint-disable-next-line array-callback-return
-                    startTasks.map(function (el, index) {
-                        let arrColumn = listDataFromServer.filter(el => Number(el.description) === index)
+                    startTasks.map(function (el, column) {
+                        let arrColumn = listDataFromServer.filter(el => Number(el.description) === column)
                         arrColumn.sort(function (a, b) {
                             if (a.index > b.index) {
                                 return 1
@@ -435,7 +433,7 @@ function App() {
 
                         })
 
-                        startTasks[index][index] = arrColumn
+                        startTasks[column][column] = arrColumn
                         console.log(startTasks)
                     })
 
@@ -453,27 +451,29 @@ function App() {
         } else {
             const copiedTasks = tasks.slice()
             const tasksArr = copiedTasks[source.droppableId][source.droppableId]
+            // eslint-disable-next-line array-callback-return
+            console.log("removed Index", result.source.index)
+            console.log("des index", result.destination.index)
             const [removed] = tasksArr.splice(result.source.index, 1)
             copiedTasks[destination.droppableId][destination.droppableId].splice(result.destination.index, 0, removed)
-            // eslint-disable-next-line array-callback-return
-            copiedTasks[destination.droppableId][destination.droppableId].map((el, index) => {
+            console.log("Copied Tasks", copiedTasks)
+
+            /*copiedTasks[destination.droppableId][destination.droppableId].map((el, index) => {
                 el.index = index
                 el.description = Number(destination.droppableId)
             })
             copiedTasks[source.droppableId][source.droppableId].map((el, index) => {
                 el.index = index
                 el.description = Number(destination.droppableId)
-            })
-            console.log("copiedTasks", copiedTasks)
-            console.log("removed", removed)
+            })*/
 
             // eslint-disable-next-line array-callback-return
             copiedTasks.map((el, column) => {
                 // eslint-disable-next-line array-callback-return
-                el[column].map((element, index) => {
-                    axios.patch(`http://localhost:5000/todo/${element._id}`, {
+                el[column].map(async (element, index) => {
+                    await axios.patch(`http://localhost:5000/todo/${element._id}`, {
                         name: element.title,
-                        description: Number(column),
+                        description: column,
                         index: index,
                         time: element.time
                     })
@@ -494,6 +494,7 @@ function App() {
                 .then((result) => {
 
                     const listDataFromServer = result.data
+                    console.log("listDataFromServer",listDataFromServer)
                     const startTasks = [
                         {
                             0: []
@@ -510,8 +511,8 @@ function App() {
                     ]
 
                     // eslint-disable-next-line array-callback-return
-                    startTasks.map(function (el, index) {
-                        let arrColumn = listDataFromServer.filter(el => Number(el.description) === index)
+                    startTasks.map(function (el, column) {
+                        let arrColumn = listDataFromServer.filter(el => Number(el.description) ===  column)
                         arrColumn.sort(function (a, b) {
                             if (a.index > b.index) {
                                 return 1
@@ -521,13 +522,12 @@ function App() {
 
                         })
 
-                        startTasks[index][index] = arrColumn
+                        startTasks[column][column].push(...arrColumn)
                         console.log(startTasks)
                     })
 
 
                     setTasks(startTasks)
-
 
                 })
                 .catch(function (error) {
@@ -536,7 +536,9 @@ function App() {
                 })
 
 
+            setTasks(copiedTasks)
         }
+
 
 
     }
