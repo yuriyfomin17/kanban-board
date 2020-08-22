@@ -11,7 +11,7 @@ const saveBut = (<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi
 
 
 function EditTitle(props) {
-    const [inputValue, setInput] = useState(props.el.name)
+    const [inputValue, setInput] = useState(props.el.title)
     const [editBut, setEditBut] = useState(true)
     const changeEdit = () => {
         setEditBut(!editBut)
@@ -24,7 +24,7 @@ function EditTitle(props) {
     return (
         <span>
 
-                {editBut ? <span className="dividerTitleBut">{props.el.name}</span>  :
+                {editBut ? <span className="dividerTitleBut">{props.el.title}</span>  :
                     <input type="text" className="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
                            value={inputValue} onChange={e => setInput(e.target.value)}/>}
             {editBut ? <button type="button" className="btn btn-outline-primary btn-sm "
